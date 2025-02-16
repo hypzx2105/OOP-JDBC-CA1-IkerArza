@@ -68,5 +68,46 @@ public class MysqlExpenseDao extends MysqlDao implements ExpenseDaoInterface {
             throw new DaoException("deleteExpense() " + e.getMessage());
         }
     }
+
+    @Override
+    public double getTotalExpenses() throws DaoException {
+        String query = "SELECT SUM(amount) AS total FROM expenses";
+        double totalExpenses = 0;
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                totalExpenses = resultSet.getDouble("total");
+            }
+        } catch (SQLException e) {
+            throw new DaoException("getTotalExpenses() " + e.getMessage());
+        }
+        return totalExpenses;
+    }
+
+    @Override
+    public double getExpensesForMonth(int month, int year) throws DaoException {
+        String query = "SELECT SUM(amount) AS total FROM expenses WHERE MONTH(dateIncurred) = ? AND YEAR(dateIncurred) = ?";
+        double totalExpenses = 0;
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, month);
+            preparedStatement.setInt(2, year);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                totalExpenses = resultSet.getDouble("total");
+            }
+        } catch (SQLException e) {
+            throw new DaoException("getExpensesForMonth() " + e.getMessage());
+        }
+        return totalExpenses;
+    }
+
+
 }
 

@@ -66,4 +66,45 @@ public class Mysql_IncomeDao extends MysqlDao implements IncomeDaoInterface {
             throw new DaoException("deleteIncome() " + e.getMessage());
         }
     }
+
+    @Override
+    public double getTotalIncome() throws DaoException {
+        String query = "SELECT SUM(amount) AS total FROM income";
+        double totalIncome = 0;
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                totalIncome = resultSet.getDouble("total");
+            }
+        } catch (SQLException e) {
+            throw new DaoException("getTotalIncome() " + e.getMessage());
+        }
+        return totalIncome;
+    }
+
+    @Override
+    public double getIncomeForMonth(int month, int year) throws DaoException {
+        String query = "SELECT SUM(amount) AS total FROM income WHERE MONTH(dateEarned) = ? AND YEAR(dateEarned) = ?";
+        double totalIncome = 0;
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, month);
+            preparedStatement.setInt(2, year);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                totalIncome = resultSet.getDouble("total");
+            }
+        } catch (SQLException e) {
+            throw new DaoException("getIncomeForMonth() " + e.getMessage());
+        }
+        return totalIncome;
+    }
+
+
 }
