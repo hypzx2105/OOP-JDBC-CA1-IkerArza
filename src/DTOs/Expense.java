@@ -29,4 +29,3 @@ public class Expense {
                 ", amount=" + amount + ", dateIncurred=" + dateIncurred + '}';
     }
 }
-
