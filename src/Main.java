@@ -59,7 +59,7 @@ public class Main {
                     List<Income> incomes = incomeDao.findAllIncome();
                     for (Income income : incomes) System.out.println(income);
                     double totalIncome = incomeDao.getTotalIncome();
-                    System.out.println("\nTotal Expenses: " + totalIncome);
+                    System.out.println("\nTotal Income: " + totalIncome);
 
                 } else if (choice == 5) {
                     System.out.print("Title: ");
